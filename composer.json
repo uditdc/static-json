@@ -1,5 +1,9 @@
 {
   "name": "dc/static-json",
   "version": "0.1.1",
-  "minimum-stability": "master"
+  "minimum-stability": "master",
+  "type": "wordpress-plugin",
+  "require": {
+      "composer/installers": "~1.0"
+  }
 }
