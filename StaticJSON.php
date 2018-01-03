@@ -6,7 +6,6 @@ Version: 0.1.1
 Text Domain: static-json
 */
 
-require (__DIR__ . '/vendor/autoload.php');
 require_once 'lib/filters.php';
 require_once 'lib/StaticJSONObject.php';
 require_once 'lib/StaticJSONConfig.php';
@@ -91,21 +90,9 @@ class StaticJSON {
     $pluginUri = $this->plugin_uri;
     $pluginPath = $this->plugin_path;
 
-		// ----- UNCOMMENT THIS WHEN BUNDLING ACF -----
-    // 1. customize ACF path
-    add_filter('acf/settings/path', function($path) use ($pluginPath) {
-      return $pluginPath . '/acf/';
-    });
-
-    // 2. customize ACF dir
-    add_filter('acf/settings/dir', function($path) use ($pluginUri) {
-      return $pluginUri . '/acf/';
-    });
-
-    include_once( $pluginPath . '/acf/acf.php' );
-		// ----- UNCOMMENT THIS WHEN BUNDLING ACF -----
-
-    include_once( $pluginPath . '/lib/acf-post-type-selector.php' );
+		if( class_exists('acf') ) {
+			include_once( $pluginPath . '/lib/acf-post-type-selector.php' );
+		}
 
     // Include OTF Regenrate thumbanils
     include_once( $pluginPath . '/lib/otf-regenerate-thumbnails.php' );
@@ -115,13 +102,7 @@ class StaticJSON {
 	 * Registers and enqueues admin-specific minified JavaScript.
 	 */
 	public function register_scripts() {
-		// Enqueue Plugin's Frontend Styles
-		// wp_register_style( 'static-json-style-frontend', $this->plugin_url . 'assets/css/main.css' );
-		// wp_enqueue_style( 'static-json-style-frontend' );
 
-		// Enqueue Plugin's Frontend Script
-		// wp_register_script( 'static-json-script-main', $this->plugin_url . 'assets/js/main.js', array( 'jquery' ), false, true );
-		// wp_enqueue_script( 'static-json-script-main' );
 	}
 
 	/**
@@ -196,20 +177,6 @@ class StaticJSON {
 	  }
 
 	/**
-	 * Generate Website
-	 */
-	public function generate_website($port = 7070) {
-		$loop = new React\EventLoop\StreamSelectLoop();
-	  $dnode = new DNode\DNode($loop);
-
-	  $dnode->connect($port, function ($remote, $connection) {
-	    $remote->compile(function ($status) use($connection) { $connection->end(); });
-	  });
-
-	  $loop->run();
-	}
-
-	/**
 	* Get the JSON Data Object from existing data files
 	*/
 	private function getJsonForLanguage($language=null) {
@@ -237,10 +204,6 @@ class StaticJSON {
 		];
 
 		return $options;
-	}
-
-	public function return_en() {
-		return 'en';
 	}
 }
 
