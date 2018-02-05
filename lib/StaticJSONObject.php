@@ -73,7 +73,7 @@ class StaticJSONObject {
 
     foreach ($this->websiteOptions['pages'] as $page) {
       if ($page->post_parent > 0) {
-        if (sizeof($children[$page->post_parent]) === 0) {
+        if ($children[$page->post_parent] && sizeof($children[$page->post_parent]) === 0) {
           $children[$page->post_parent] = [];
         }
 
